@@ -1,1 +1,79 @@
+let allUsers = [];
+let currentSort = "asc"; // asc or desc
 
+async function init() {
+    allUsers = await fetchUsers();
+
+    populateCityFilter(allUsers);
+    displayUsers(allUsers);
+
+    const searchInput = document.getElementById("search");
+    searchInput.addEventListener("input", handleFilter);
+
+    const sortBtn = document.getElementById("sortBtn");
+    sortBtn.addEventListener("click", () => {
+        currentSort = currentSort === "asc" ? "desc" : "asc";
+        sortBtn.textContent = currentSort === "asc" ? "Sort A-Z" : "Sort Z-A";
+        handleFilter();
+    });
+
+    const cityFilter = document.getElementById("cityFilter");
+    cityFilter.addEventListener("change", handleFilter);
+}
+
+function handleFilter() {
+    const query = document.getElementById("search").value.toLowerCase();
+    const city = document.getElementById("cityFilter").value;
+
+    let filtered = allUsers.filter(user => {
+        const matchesSearch =
+            user.name.toLowerCase().includes(query) ||
+            user.email.toLowerCase().includes(query);
+
+        const matchesCity =
+            city === "all" || user.city === city;
+
+        return matchesSearch && matchesCity;
+    });
+
+    filtered.sort((a, b) => {
+        if (currentSort === "asc") {
+            return a.name.localeCompare(b.name);
+        } else {
+            return b.name.localeCompare(a.name);
+        }
+    });
+
+    displayUsers(filtered);
+}
+
+function populateCityFilter(users) {
+    const cityFilter = document.getElementById("cityFilter");
+
+    const cities = [...new Set(users.map(user => user.city))];
+
+    cities.forEach(city => {
+        const option = document.createElement("option");
+        option.value = city;
+        option.textContent = city;
+        cityFilter.appendChild(option);
+    });
+}
+
+function displayUsers(users) {
+    const container = document.getElementById("userList");
+    container.innerHTML = "";
+
+    users.forEach(user => {
+        const div = document.createElement("div");
+        div.classList.add("user-card");
+        div.innerHTML = `
+            <h3>${user.name}</h3>
+            <p>${user.email}</p>
+            <small>${user.city}</small>
+        `;
+        container.appendChild(div);
+    });
+}
+
+init();
