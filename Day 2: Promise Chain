@@ -32,7 +32,6 @@ function task3() {
     });
 }
 
-// Start timing
 console.time("Total Time");
 
 task1()
