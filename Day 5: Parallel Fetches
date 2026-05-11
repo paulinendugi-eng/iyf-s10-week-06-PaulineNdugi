@@ -4,7 +4,6 @@ const endpoints = [
     "https://jsonplaceholder.typicode.com/comments/1"
 ];
 
-// Helper function to fetch data
 function fetchData(url) {
     return fetch(url).then(res => {
         if (!res.ok) {
@@ -16,7 +15,6 @@ function fetchData(url) {
 
 console.log("Starting parallel fetches...\n");
 
-// Run all requests simultaneously
 Promise.allSettled(endpoints.map(fetchData))
     .then(results => {
         results.forEach((result, index) => {
