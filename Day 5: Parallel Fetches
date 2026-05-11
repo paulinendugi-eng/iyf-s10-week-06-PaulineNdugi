@@ -1,1 +1,31 @@
+const endpoints = [
+    "https://jsonplaceholder.typicode.com/users/1",
+    "https://jsonplaceholder.typicode.com/posts/1",
+    "https://jsonplaceholder.typicode.com/comments/1"
+];
 
+// Helper function to fetch data
+function fetchData(url) {
+    return fetch(url).then(res => {
+        if (!res.ok) {
+            throw new Error(`Failed to fetch ${url}`);
+        }
+        return res.json();
+    });
+}
+
+console.log("Starting parallel fetches...\n");
+
+// Run all requests simultaneously
+Promise.allSettled(endpoints.map(fetchData))
+    .then(results => {
+        results.forEach((result, index) => {
+            if (result.status === "fulfilled") {
+                console.log(`✅ Result ${index + 1}:`, result.value);
+            } else {
+                console.log(`❌ Error ${index + 1}:`, result.reason);
+            }
+        });
+
+        console.log("\nAll requests completed (success + failure included).");
+    });
