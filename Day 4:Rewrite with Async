@@ -1,1 +1,52 @@
+function getUser(id, callback) {
+    setTimeout(() => {
+        const user = { id, name: "Pauline" };
+        callback(user);
+    }, 1000);
+}
 
+function getPosts(userId, callback) {
+    setTimeout(() => {
+        const posts = ["Post 1", "Post 2"];
+        callback(posts);
+    }, 1000);
+}
+
+getUser(1, (user) => {
+    console.log("User (callback):", user);
+
+    getPosts(user.id, (posts) => {
+        console.log("Posts (callback):", posts);
+    });
+});
+
+function getUserPromise(id) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve({ id, name: "Pauline" });
+        }, 1000);
+    });
+}
+
+function getPostsPromise(userId) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(["Post 1", "Post 2"]);
+        }, 1000);
+    });
+};
+
+async function showUserData() {
+    try {
+        const user = await getUserPromise(1);
+        console.log("User (async):", user);
+
+        const posts = await getPostsPromise(user.id);
+        console.log("Posts (async):", posts);
+
+    } catch (error) {
+        console.log("Error:", error);
+    }
+}
+
+showUserData();
