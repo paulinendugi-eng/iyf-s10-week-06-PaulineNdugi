@@ -1,1 +1,60 @@
+async function getDataWithAsync() {
+    const user = await getUserData(1);
+    const posts = await getUserPosts(user.id);
+    const comments = await getPostComments(posts[0].id);
 
+    return comments;
+}
+
+getDataWithAsync().then(comments => {
+    console.log("Comments (then):", comments);
+});
+
+async function main() {
+    const comments = await getDataWithAsync();
+    console.log("Comments (async main):", comments);
+}
+
+main();
+
+async function fetchUserData(userId) {
+    try {
+        const user = await getUserData(userId);
+        const posts = await getUserPosts(user.id);
+
+        return { user, posts };
+
+    } catch (error) {
+        console.error("Failed to fetch user data:", error);
+        throw error;
+    }
+}
+
+async function getAllUsers() {
+    const [u1, u2, u3] = await Promise.all([
+        getUserData(1),
+        getUserData(2),
+        getUserData(3)
+    ]);
+
+    return [u1, u2, u3];
+}
+
+async function runParallel() {
+    const users = await getAllUsers();
+    console.log("Parallel users:", users);
+}
+
+runParallel();
+
+async function getAllData() {
+    const user = await getUserData(1);
+    const posts = await getUserPosts(user.id);
+    const comments = await getPostComments(posts[0].id);
+
+    console.log("Final result:", comments);
+
+    return comments;
+}
+
+getAllData();
